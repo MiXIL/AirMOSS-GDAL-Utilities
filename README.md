@@ -9,3 +9,6 @@ Set of utility scripts for converting and working with AirMOSS data and retrieva
 
 * convertAirMOSSRetrieval2GDAL - Convert USC AirMOSS soil moisture retreval to GDAL
 
+### Retreval Utilities ###
+
+* airmoss_gen_sm.py - Generate image with soil moisture retreval at a range of depths for visualising profile in TuiView. Requires RIOS.
