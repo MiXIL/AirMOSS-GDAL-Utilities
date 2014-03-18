@@ -61,6 +61,7 @@ def getGDALFormatFromExt(fileName):
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--inimage", type=str, help="Input image",required=True)
 parser.add_argument("-o", "--outimage", type=str, help="Output image", required=True)
+parser.add_argument("--gamma0",action='store_true',default=False, help="Output as gamma0 (default sigma0)", required=False)
 args = parser.parse_args() 
 
 
@@ -112,12 +113,19 @@ newDataset = driver.Create(outFileName, inXSize, inYSize, numBands, gdal.GDT_Flo
 newDataset.SetGeoTransform(geoTransform)
 newDataset.SetProjection(srs.ExportToWkt())
 
+if args.gamma0:
+    localInc = indata['incidence_angle']
+
 # Loop through input layers
 for layer in range(numLayers):
     layerName = inputLayers[layer]
+    print(' Saving ' + layerName)
     
     outData = np.array(indata[layerName])
     outData = np.where(outData < -9998,0,outData)
+
+    if args.gamma0:
+        outData = outData / np.cos(localInc)
 
     # Write out data
     newDataset.GetRasterBand(layer+1).WriteArray(outData)
