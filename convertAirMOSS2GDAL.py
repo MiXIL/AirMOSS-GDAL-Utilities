@@ -37,6 +37,8 @@ import sys, re, os
 import h5py, gdal, osr
 import numpy as np
 import argparse
+import warnings
+warnings.simplefilter('ignore', RuntimeWarning) # Ignore warnings.
 
 def getGDALFormatFromExt(fileName):
     """ Get GDAL format, based on filename """
@@ -62,13 +64,18 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--inimage", type=str, help="Input image",required=True)
 parser.add_argument("-o", "--outimage", type=str, help="Output image", required=True)
 parser.add_argument("--gamma0",action='store_true',default=False, help="Output as gamma0 (default sigma0)", required=False)
+parser.add_argument("--dB",action='store_true',default=False, help="Convert to dB", required=False)
+parser.add_argument("--linc",action='store_true',default=False, help="Export local incidence angle image rather than SAR data.", required=False)
 args = parser.parse_args() 
 
 
 inHDF5File = args.inimage
 outFileName = args.outimage
 
-inputLayers = ['HHHH','VVVV','HVHV']
+if args.linc:
+    inputLayers = ['incidence_angle']
+else:
+    inputLayers = ['HHHH','VVVV','HVHV']
 
 numLayers = len(inputLayers)
 
@@ -113,7 +120,7 @@ newDataset = driver.Create(outFileName, inXSize, inYSize, numBands, gdal.GDT_Flo
 newDataset.SetGeoTransform(geoTransform)
 newDataset.SetProjection(srs.ExportToWkt())
 
-if args.gamma0:
+if args.gamma0 or args.linc:
     localInc = indata['incidence_angle']
 
 # Loop through input layers
@@ -126,6 +133,9 @@ for layer in range(numLayers):
 
     if args.gamma0:
         outData = outData / np.cos(localInc)
+
+    if args.dB:
+        outData = np.where(outData > 0,10*np.log10(outData),np.nan)
 
     # Write out data
     newDataset.GetRasterBand(layer+1).WriteArray(outData)

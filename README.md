@@ -21,6 +21,10 @@ Usage:
 
 To export as gamma0 (sigma0 / cos(theta)) pass in --gamma0.
 
+To export values in dB pass in --dB
+
+To export an image with the local incidence angle rather than the SAR data pass in --linc
+
 ### Retreval Utilities ###
 
 * airmoss_gen_sm.py - Generate image with soil moisture retreval at a range of depths for visualising profile in TuiView. Requires RIOS.
