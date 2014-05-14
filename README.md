@@ -1,9 +1,15 @@
 AirMOSS GDAL Utilities
 ======================
 
-Set of utility scripts for converting and working with AirMOSS data and retrievals using GDAL
+A set of utility scripts for converting and working with H5 format AirMOSS data and retrievals using GDAL, allowing them to be used in popular GIS packages (e.g., QGIS, ArcMap).
 
-The scripts require Python with NumPy, H5Py and GDAL (Python bindings).
+The conversion scripts require Python with NumPy, H5Py and GDAL (Python bindings). If you don't already have these installed you can download Anaconda / Miniconda from https://store.continuum.io/cshop/anaconda/
+
+Once installed use:
+
+    conda install numpy h5py gdal
+
+To install the required libraries. The retreval utilities require additional libraries (e.g., RIOS, RSGISLib).
 
 ### Conversion ###
 
